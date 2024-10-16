@@ -35,16 +35,12 @@ public class EnrollmentSystem {
     public boolean enrollStudentToCourse(Student student, Course course){
         boolean success = false;
         System.out.println("Enrolling student " + student.getId() + " to course " + course.getModuleCode());
-        try{
-            Thread.sleep(500);
-        }catch (InterruptedException e){
-            e.printStackTrace();
-        }
+
         if (!isStudentEligible(student, course)){
             return success;
         }
 
-        synchronized (student){
+        synchronized (course){
             if (course.isThereAvailableSlots()){
                 course.decrementStudentSlots();
                 student.addCourse(course);
