@@ -4,10 +4,6 @@ public class Student {
     private int id = -1;
     private ArrayList<String> completedModuleCodes = new ArrayList<>();
 
-    public Student(){
-
-    }
-
     public Student(int id){
         this.id = id;
     }
@@ -37,7 +33,4 @@ public class Student {
         return completedModuleCodes;
     }
 
-    public void setCompletedModules(ArrayList<String> completedCourseCodes) {
-        this.completedModuleCodes = completedCourseCodes;
-    }
 }

@@ -1,44 +1,39 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Course {
-    private String moduleCode;
+    private final String moduleCode;
     private ArrayList<String> prerequisiteModuleCodes = new ArrayList<>();
-    private int studentSlotsRemaining = 30;
+    private int studentSlots;
+    private int studentSlotsRemaining;
 
-    public Course(){
 
-    }
-
-    public Course(String moduleCode){
+    public Course(String moduleCode, int studentSlots){
         this.moduleCode = moduleCode;
         this.prerequisiteModuleCodes = new ArrayList<>();
+        this.studentSlots = studentSlots;
+        this.studentSlotsRemaining = studentSlots;
     }
 
-    public Course(String moduleCode, String[] prerequisiteModuleCodes){
+    public Course(String moduleCode, int studentSlots, String[] prerequisiteModuleCodes){
         this.moduleCode = moduleCode;
         this.prerequisiteModuleCodes = new ArrayList<>(List.of(prerequisiteModuleCodes));
+        this.studentSlots = studentSlots;
+        this.studentSlotsRemaining = studentSlots;
     }
 
-    public Course(String moduleCode, ArrayList<String > prerequisiteModuleCodes){
+    public Course(String moduleCode, int studentSlots, ArrayList<String > prerequisiteModuleCodes){
         this.moduleCode = moduleCode;
         this.prerequisiteModuleCodes = prerequisiteModuleCodes;
+        this.studentSlots = studentSlots;
+        this.studentSlotsRemaining = studentSlots;
     }
 
     public String getModuleCode() {
         return moduleCode;
     }
 
-    public void setModuleCode(String moduleCode) {
-        this.moduleCode = moduleCode;
-    }
-
     public ArrayList<String> getPrerequisiteModuleCodes() {
         return prerequisiteModuleCodes;
-    }
-
-    public void setPrerequisiteModuleCodes(ArrayList<String> prerequisiteModuleCodes) {
-        this.prerequisiteModuleCodes = prerequisiteModuleCodes;
     }
 
     public synchronized void decrementStudentSlots(){
@@ -49,8 +44,7 @@ public class Course {
         return this.studentSlotsRemaining > 0;
     }
 
-    public int getStudentSlotsRemaining() {
-        return studentSlotsRemaining;
+    public int getStudentSlots(){
+        return studentSlots;
     }
-
 }
