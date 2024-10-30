@@ -4,7 +4,9 @@ import java.util.List;
 public class Course {
     private String moduleCode;
     private ArrayList<String> prerequisiteModuleCodes = new ArrayList<>();
-    private int studentSlotsRemaining = 30;
+    private final int initialSlots = 30;
+    private int studentSlotsRemaining = initialSlots;
+    private final int maxStudentSlots = (int)(initialSlots * 1.2);
 
     public Course(){
 
@@ -42,11 +44,13 @@ public class Course {
     }
 
     public synchronized void decrementStudentSlots(){
-        this.studentSlotsRemaining--;
+        if (studentSlotsRemaining > -1 * (maxStudentSlots - initialSlots)){
+            this.studentSlotsRemaining--;
+        }
     }
 
     public synchronized boolean isThereAvailableSlots(){
-        return this.studentSlotsRemaining > 0;
+        return studentSlotsRemaining > -1 * (maxStudentSlots - initialSlots);
     }
 
     public int getStudentSlotsRemaining() {

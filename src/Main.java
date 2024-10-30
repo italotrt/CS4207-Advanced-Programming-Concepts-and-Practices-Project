@@ -13,7 +13,7 @@ public static void main(String[] args) {
 
     // Init Students
     ArrayList<Student> students = new ArrayList<>();
-    for (int i = 0; i < 35; i++) {
+    for (int i = 0; i < 40; i++) {
         students.add(new Student(i));
     }
 
