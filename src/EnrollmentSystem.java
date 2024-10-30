@@ -1,11 +1,13 @@
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 
 
 public class EnrollmentSystem {
+    private static final double OVERBOOK_LIMIT = 0.2;
     private final ArrayList<Student> students;
     private final ArrayList<Course> courses;
+    private final HashMap<Course, ArrayDeque<Integer>> overbookedStudents = new HashMap<>();
     private Integer studentIdTracker = 0;
+
 
     public EnrollmentSystem(){
         students = new ArrayList<>();
@@ -48,6 +50,20 @@ public class EnrollmentSystem {
             }
         }
 
+        if (success){
+            return success;
+        }
+
+        synchronized (course){
+            if(!isOverbookedFull(course)){
+                addStudentToOverbookedQue(student.getId(), course);
+//                student.addCourse(course);
+                success = true;
+            } else {
+                System.out.printf("Course %s is full %n", course.getModuleCode());
+            }
+        }
+
         return success;
     }
 
@@ -69,8 +85,33 @@ public class EnrollmentSystem {
         return students;
     }
 
-    public ArrayList<Course> getCourses() {
-        return courses;
+    public Queue<Integer> getOverbookedStudents(Course course){
+        return this.overbookedStudents.get(course);
+    }
+
+
+    public synchronized boolean isOverbookedFull(Course course){
+        ArrayDeque<Integer> studentOverbookedQueue = this.overbookedStudents.computeIfAbsent(course, k -> new ArrayDeque<>());
+
+        return studentOverbookedQueue.size() > (int) (course.getStudentSlots() * OVERBOOK_LIMIT);
+    }
+
+    public void addStudentToOverbookedQue(Integer studentId, Course course){
+        ArrayDeque<Integer> studentOverbookedQueue = this.overbookedStudents.computeIfAbsent(course, k -> new ArrayDeque<>());
+
+        studentOverbookedQueue.add(studentId);
+    }
+
+    public void enrollFirstStudentInQueue(Course course){
+        ArrayDeque<Integer> studentOverbookedQueue = this.overbookedStudents.get(course);
+        Integer studentId = studentOverbookedQueue.poll();
+        this.students.stream()
+                .filter(s -> {
+                    assert studentId != null;
+                    return s.getId() == studentId;
+                })
+                .findFirst()
+                .ifPresent(student -> student.addCourse(course));
     }
 
 }
