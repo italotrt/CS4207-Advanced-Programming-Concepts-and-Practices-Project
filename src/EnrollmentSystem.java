@@ -14,25 +14,17 @@ public class EnrollmentSystem {
         courses = new ArrayList<>();
     }
 
-    public void addStudent(Student s){
-        this.students.add(s);
-        if(s.getId() == -1){
-            s.setId(studentIdTracker);
-            studentIdTracker++;
-        }
-    }
-
-    public void addCourse(Course c){
-        this.courses.add(c);
-    }
-
-    public void addStudents(ArrayList<Student> students){
-        students.forEach(this::addStudent);
-    }
-
-    public void addCourses(ArrayList<Course> courses){
-        this.courses.addAll(courses);
-    }
+//    public void addStudent(Student s){
+//        this.students.add(s);
+//        if(s.getId() == -1){
+//            s.setId(studentIdTracker);
+//            studentIdTracker++;
+//        }
+//    }
+//
+//    public void addCourse(Course c){
+//        this.courses.add(c);
+//    }
 
     public boolean enrollStudentToCourse(Student student, Course course){
         boolean success = false;
@@ -81,13 +73,13 @@ public class EnrollmentSystem {
         return eligibility;
     }
 
-    public ArrayList<Student> getStudents() {
-        return students;
-    }
-
-    public Queue<Integer> getOverbookedStudents(Course course){
-        return this.overbookedStudents.get(course);
-    }
+//    public ArrayList<Student> getStudents() {
+//        return students;
+//    }
+//
+//    public Queue<Integer> getOverbookedStudents(Course course){
+//        return this.overbookedStudents.get(course);
+//    }
 
 
     public synchronized boolean isOverbookedFull(Course course){

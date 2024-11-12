@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Interact with SimpleStorage Contract</title>
+    <script src='https://cdn.jsdelivr.net/npm/web3@1.6.1/dist/web3.min.js'></script>
+</head>
+<body><h1>Interact with SimpleStorage Contract</h1>
+<p>Current Message: <span id='message'>Loading...</span>
+</p>
+<input type='text' id='newMessage' placeholder='Enter new message'>
+<button id='setMessage'>Set Message</button>
+<button id='getMessage'>Get Message</button>
+<script>
+    if (window.ethereum) {
+    const web3 = new Web3(window.ethereum);
+    window.ethereum.request({method: 'eth_requestAccounts'});
+    const contractAddress = '0x99bF5c3600f75DA93f364b0126E9C342c69fa98B';
+    const contractABI = [
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "string",
+                        "name": "studentId",
+                        "type": "string"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "string",
+                        "name": "courseCode",
+                        "type": "string"
+                    }
+                ],
+                "name": "Enrolled",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "string",
+                        "name": "studentId",
+                        "type": "string"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "string",
+                        "name": "courseCode",
+                        "type": "string"
+                    }
+                ],
+                "name": "EnrollmentFailed",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "string",
+                        "name": "courseCode",
+                        "type": "string"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "string",
+                        "name": "studentId",
+                        "type": "string"
+                    }
+                ],
+                "name": "Overbooked",
+                "type": "event"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "name": "courses",
+                "outputs": [
+                    {
+                        "internalType": "string",
+                        "name": "moduleCode",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "studentSlots",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "slotsRemaining",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "overbookedStudents",
+                "outputs": [
+                    {
+                        "internalType": "string",
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "name": "students",
+                "outputs": [
+                    {
+                        "internalType": "string",
+                        "name": "id",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "studentId",
+                        "type": "string"
+                    }
+                ],
+                "name": "addStudent",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "moduleCode",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "slots",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string[]",
+                        "name": "prerequisites",
+                        "type": "string[]"
+                    }
+                ],
+                "name": "addCourse",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "studentId",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "courseCode",
+                        "type": "string"
+                    }
+                ],
+                "name": "enrollStudent",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "courseCode",
+                        "type": "string"
+                    }
+                ],
+                "name": "enrollFirstStudentInQueue",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            }
+        ];
+    const simpleStorage = new web3.eth.Contract(contractABI, contractAddress);
+
+    async function getMessage() {
+        const message = await simpleStorage.methods.message().call();
+        document.getElementById('message').innerText = message;
+    }
+
+    async function setMessage() {
+        const accounts = await web3.eth.getAccounts();
+        const newMessage = document.getElementById('newMessage').value;
+        await simpleStorage.methods.setMessage(newMessage).send({from: accounts[0]});
+        getMessage();
+    }
+
+    document.getElementById('getMessage').addEventListener('click', getMessage);
+    document.getElementById('setMessage').addEventListener('click', setMessage);
+    getMessage();
+} else {
+    alert('Please install MetaMask to interact with this application.');
+}
+</script>
+</body>
+</html>

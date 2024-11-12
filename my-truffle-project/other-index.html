@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Enrollment</title>
+    <script src='https://cdn.jsdelivr.net/npm/web3@1.6.1/dist/web3.min.js'></script>
+</head>
+<body>
+<h1>Student Enrollment System</h1>
+<span id='message'>Loading...</span>
+<!-- Form to add a student -->
+<div>
+    <h2>Add Student</h2>
+    <input type="text" id="studentName" placeholder="Student Name">
+    <input type="text" id="studentId" placeholder="Student ID">
+    <button id="addStudentBtn">Add Student</button>
+</div>
+
+<!-- Form to add a course -->
+<div>
+    <h2>Add Course</h2>
+    <input type="text" id="courseCode" placeholder="Course Code">
+    <input type="number" id="slots" placeholder="Number of Slots">
+    <input type="text" id="prerequisites" placeholder="Prerequisite Modules (comma separated)">
+    <button onclick="addCourse()">Add Course</button>
+</div>
+
+<!-- Form to enroll a student -->
+<div>
+    <h2>Enroll in Course</h2>
+    <input type="text" id="enrollStudentId" placeholder="Student ID">
+    <input type="text" id="enrollCourseCode" placeholder="Course Code">
+    <button onclick="enrollStudent()">Enroll Student</button>
+</div>
+<script>
+
+</script>
+<script>
+    if (window.ethereum) {
+        const web3 = new Web3(window.ethereum);
+        window.ethereum.request({ method: 'eth_requestAccounts' });
+        const contractAddress = '0x1F3063044cd5D42df10a82B72D2fA3fa7F1B3096';
+        const contractABI = [
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "initialMessage",
+                        "type": "string"
+                    }
+                ],
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "string",
+                        "name": "studentId",
+                        "type": "string"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "string",
+                        "name": "courseCode",
+                        "type": "string"
+                    }
+                ],
+                "name": "Enrolled",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "string",
+                        "name": "studentId",
+                        "type": "string"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "string",
+                        "name": "courseCode",
+                        "type": "string"
+                    }
+                ],
+                "name": "EnrollmentFailed",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "string",
+                        "name": "courseCode",
+                        "type": "string"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "string",
+                        "name": "studentId",
+                        "type": "string"
+                    }
+                ],
+                "name": "Overbooked",
+                "type": "event"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "name": "courses",
+                "outputs": [
+                    {
+                        "internalType": "string",
+                        "name": "moduleCode",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "studentSlots",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "slotsRemaining",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [],
+                "name": "message",
+                "outputs": [
+                    {
+                        "internalType": "string",
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "overbookedStudents",
+                "outputs": [
+                    {
+                        "internalType": "string",
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "name": "students",
+                "outputs": [
+                    {
+                        "internalType": "string",
+                        "name": "id",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "studentId",
+                        "type": "string"
+                    }
+                ],
+                "name": "addStudent",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "moduleCode",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "slots",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string[]",
+                        "name": "prerequisites",
+                        "type": "string[]"
+                    }
+                ],
+                "name": "addCourse",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "studentId",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "courseCode",
+                        "type": "string"
+                    }
+                ],
+                "name": "enrollStudent",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "courseCode",
+                        "type": "string"
+                    }
+                ],
+                "name": "enrollFirstStudentInQueue",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            }
+        ];
+
+        const courseEnrollment = new web3.eth.Contract(contractABI, contractAddress);
+        console.log(courseEnrollment.methods); // This will log all available methods in the contract
+
+        // Declare variables for signer and provider (for ethers.js)
+        // let provider;
+        // let signer;
+        let contract;
+        async function getMessage() {
+            const message = await courseEnrollment.methods.message().call();
+            document.getElementById('message').innerText = message;
+        }
+        // // Initialize Ethers.js and connect to the blockchain
+        // async function init() {
+        //     // If we have an Ethereum provider (MetaMask or similar)
+        //     if (window.ethereum) {
+        //         // Initialize the provider and signer using Ethers.js
+        //         provider = new ethers.providers.Web3Provider(window.ethereum);
+        //         await provider.send("eth_requestAccounts", []); // Request account access
+        //         signer = provider.getSigner(); // Get the signer (user's account)
+        //         contract = new ethers.Contract(contractAddress, contractABI, signer); // Create Ethers contract instance
+        //
+        //         // Enable the Add Student button once the contract is initialized
+        //         document.getElementById('addStudentBtn').disabled = false;
+        //     } else {
+        //         alert("Please install MetaMask or use a Web3 provider.");
+        //     }
+        // }
+
+        // Add a student using the contract
+        async function addStudent() {
+            const studentName = document.getElementById('studentName').value;
+            const studentId = document.getElementById('studentId').value;
+            console.log('studentName:', studentName, 'studentId:', studentId);
+
+            if (studentName && studentId) {
+                // try {
+                const accounts = await web3.eth.getAccounts();
+                await courseEnrollment.methods.addStudent(studentName, studentId).send({from: accounts[0]});
+                alert("Student added successfully!");
+                // } catch (err) {
+                //     console.error(err);
+                //     alert("Error adding student.");
+                // }
+            } else {
+                alert("Please enter a valid student name and ID.");
+            }
+        }
+
+        // Add a course using the contract
+        async function addCourse() {
+            const courseCode = document.getElementById('courseCode').value;
+            const slots = document.getElementById('slots').value;
+            const prerequisites = document.getElementById('prerequisites').value.split(',');
+
+            if (courseCode && slots && prerequisites) {
+                try {
+                    const tx = await courseEnrollment.methods.addCourse(courseCode, slots, prerequisites);
+                    await tx.wait();
+                    alert("Course added successfully!");
+                } catch (err) {
+                    console.error(err);
+                    alert("Error adding course.");
+                }
+            } else {
+                alert("Please enter valid course details.");
+            }
+        }
+
+        // Enroll a student in a course using the contract
+        async function enrollStudent() {
+            const studentId = document.getElementById('enrollStudentId').value;
+            const courseCode = document.getElementById('enrollCourseCode').value;
+
+            if (studentId && courseCode) {
+                try {
+                    const tx = await courseEnrollment.methods.enrollStudent(studentId, courseCode);
+                    await tx.wait();
+                    alert("Student enrolled successfully!");
+                } catch (err) {
+                    console.error(err);
+                    alert("Error enrolling student.");
+                }
+            } else {
+                alert("Please enter valid student ID and course code.");
+            }
+        }
+        document.getElementById('addStudentBtn').addEventListener('click', addStudent);
+        getMessage();
+    } else {
+        alert('Please install MetaMask to interact with this application.');
+    }
+</script>
+</body>
+</html>

@@ -19,8 +19,8 @@ public static void main(String[] args) {
 
     // Init System
     EnrollmentSystem enrollmentSystem = new EnrollmentSystem();
-    enrollmentSystem.addStudents(students);
-    enrollmentSystem.addCourses(courses);
+//    enrollmentSystem.addStudents(students);
+//    enrollmentSystem.addCourses(courses);
 
     // Parallelism
     List<CompletableFuture<Boolean>> futures = enrollmentSystem.getStudents().stream()
