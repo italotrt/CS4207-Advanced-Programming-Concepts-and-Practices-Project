@@ -1,41 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-//contract SimpleStorage {
-//    string public message;
-//    constructor(string memory initialMessage) {
-//        message = initialMessage;
-//    }
-//
-//    function setMessage(string memory newMessage) public {
-//        message = newMessage;
-//    }
-//}
-
-//contract ActivityLogger {
-//
-//    struct ActivityData {
-//        string inputData;
-//        string outputData;
-//    }
-//
-//    mapping(uint => ActivityData) public activities;
-//    uint public activityCount = 0;
-//
-//    event ActivityLogged(uint activityId, string inputData, string outputData);
-//
-//    function logActivity(string memory _inputData, string memory _outputData) public returns (uint) {
-//        activityCount++;
-//        activities[activityCount] = ActivityData(_inputData, _outputData);
-//        emit ActivityLogged(activityCount, _inputData, _outputData);
-//        return activityCount;
-//    }
-//
-//    function getActivity(uint _activityId) public view returns (string memory, string memory) {
-//        ActivityData storage activity = activities[_activityId];
-//        return (activity.inputData, activity.outputData);
-//    }
-//}
 
 contract EnrollmentContract{
     uint constant private OVERBOOK_LIMIT = 20;
@@ -45,11 +10,6 @@ contract EnrollmentContract{
         message = initialMessage;
     }
 
-//    ActivityLogger public activityLogger;
-//
-//    constructor(ActivityLogger _activityLogger) {
-//        activityLogger = _activityLogger;
-//    }
     struct Student{
         string id;
         string name;
