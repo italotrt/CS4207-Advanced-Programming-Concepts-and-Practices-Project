@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Project block-chain</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
+</head>
+  <body>
+    <div>
+        <div>
+          <h2>Add Student</h2>
+
+          <input type="text" id="studentName" placeholder="Student Name">
+          <input type="text" id="studentId" placeholder="Student ID">
+
+          <button id="addStudentBtn">Add Student</button>
+        </div>
+
+        <div>
+          <h2>Add Mentor</h2>
+
+          <input type="text" id="mentorName" placeholder="Mentor Name">
+
+          <label for="mentorLanguage">Choose a programming language:</label>
+          <select name="mentorLanguage" id="mentorLanguage">
+            <option value="PHP">PHP</option>
+            <option value="Python">Python</option>
+            <option value="JS">JS</option>
+            <option value="Java">Java</option>
+          </select>
+
+          <button id="addMentorBtn">Add Mentor</button>
+        </div>
+    </div>
+
+    <script>
+      if (window.ethereum) {
+        const web3 = new Web3(window.ethereum);
+        window.ethereum.request({method: 'eth_requestAccounts'});
+
+        const contractAddress = '0xb4246fD17fdd5dB2eae7CD3b7A5cBC163978e2Cc';
+
+        let courseEnrollment;
+
+        async function initializeContract() {
+          try {
+            const response = await fetch('build/contracts/Chat.json');
+            const jsonObject = await response.json();
+            const contractABI = jsonObject['abi'];
+
+            courseEnrollment = new web3.eth.Contract(contractABI, contractAddress);
+
+            console.log('Contract methods:', courseEnrollment.methods);
+
+            document.getElementById('addStudentBtn').addEventListener('click', addStudent);
+            document.getElementById('addMentorBtn').addEventListener('click', addMentor);
+          } catch (error) {
+            console.error('Error loading contract ABI:', error);
+          }
+        }
+
+
+
+        async function addStudent() {
+          const studentName = document.getElementById('studentName').value;
+          const studentId = document.getElementById('studentId').value;
+          console.log('studentName:', studentName, 'studentId:', studentId);
+
+          if (studentName && studentId) {
+            try {
+              const accounts = await web3.eth.getAccounts();
+              console.log(accounts);
+              await courseEnrollment.methods.addStudent(studentName, studentId).send({from: accounts[0]});
+              // tx.send({from: accounts[0]});
+              alert("Student added successfully!");
+            } catch(error) {
+              console.log(error)
+            }
+          } else {
+            alert("Please enter a valid student name and ID.");
+          }
+        }
+
+        async function addMentor() {
+          const mentorName = document.getElementById('mentorLanguage').value;
+          const mentorLanguage = document.getElementById('mentorName').value;
+          console.log('studentName:', studentName, 'studentId:', studentId);
+
+          if (mentorName && mentorLanguage) {
+            const accounts = await web3.eth.getAccounts();
+            console.log(accounts);
+            tw = await courseEnrollment.methods.addMentor(mentorName, mentorLanguage);
+            tw.send({from: accounts[0]})
+            alert("Mentor added successfully!");
+          } else {
+            alert("Please enter a valid Mentor name and programming language.");
+          }
+        }
+
+        initializeContract();
+      }
+    </script>
+
+  </body>
+</html>
