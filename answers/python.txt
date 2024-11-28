@@ -1,8 +1,0 @@
-Q: What are Python decorators?
-A: Decorators are functions that modify the behavior of other functions. They allow you to wrap another function to extend its functionality without permanently modifying it.
-
-Q: Explain Python's GIL?
-A: The Global Interpreter Lock (GIL) is a mutex that protects access to Python objects. It prevents multiple native threads from executing Python bytecode simultaneously.
-
-Q: What are list comprehensions?
-A: List comprehensions provide a concise way to create lists based on existing lists. They combine a for loop and a new list creation into a single line of readable code.

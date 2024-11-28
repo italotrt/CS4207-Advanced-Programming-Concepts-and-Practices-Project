@@ -1,8 +1,0 @@
-Q: What is inheritance in Java?
-A: Inheritance is a mechanism that allows a class to inherit attributes and methods from another class. It supports code reuse and establishes a relationship between parent and child classes.
-
-Q: Explain Java's garbage collection?
-A: Java's garbage collection automatically deallocates memory for objects that are no longer referenced, preventing memory leaks. The JVM handles this process in the background.
-
-Q: What are the differences between ArrayList and LinkedList?
-A: ArrayList uses dynamic array for storage and provides fast random access, while LinkedList uses doubly linked list offering faster insert/delete operations but slower random access.

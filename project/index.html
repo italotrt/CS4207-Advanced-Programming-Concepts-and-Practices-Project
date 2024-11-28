@@ -60,12 +60,32 @@
         const contractAddress = '0x98B3106c623fDEaCcC64CEFe06cb87F40174FEfd';
 
         let smartContract;
+        let pythonAnswers;
+        let phpAnswers;
+        let jsAnswers;
+        let javaAnswers;
 
         async function initializeContract() {
           try {
-            const response = await fetch('build/contracts/Chat.json');
-            const jsonObject = await response.json();
+            let response = await fetch('build/contracts/Chat.json');
+            let jsonObject = await response.json();
             const contractABI = jsonObject['abi'];
+
+            response = await fetch('../answers/python.json');
+            jsonObject = await response.json();
+            pythonAnswers = jsonObject['Answer'];
+
+            response = await fetch('../answers/php.json');
+            jsonObject = await response.json();
+            phpAnswers = jsonObject['Answer'];
+
+            response = await fetch('../answers/js.json');
+            jsonObject = await response.json();
+            jsAnswers = jsonObject['Answer'];
+
+            response = await fetch('../answers/java.json');
+            jsonObject = await response.json();
+            javaAnswers = jsonObject['Answer'];
 
             smartContract = new web3.eth.Contract(contractABI, contractAddress);
 
