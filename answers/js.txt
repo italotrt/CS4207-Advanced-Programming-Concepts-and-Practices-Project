@@ -1,0 +1,8 @@
+Q: What is closure in JavaScript?
+A: A closure is a function that has access to variables in its outer lexical scope, even after the outer function has returned. It preserves the data in its lexical scope.
+
+Q: Explain Promise in JavaScript?
+A: Promise is an object representing eventual completion of an asynchronous operation. It can be in pending, fulfilled, or rejected states, helping manage async code.
+
+Q: What is the event loop?
+A: The event loop is JavaScript's mechanism for executing code, handling events, and processing async operations. It continuously checks the call stack and callback queue.

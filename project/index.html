@@ -6,7 +6,11 @@
   <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
 </head>
   <body>
+    <h1 id="header">Project block-chain</h1>
     <div>
+      <div>
+        <button id="getStudentsBtn">Get Students</button>
+      </div>
         <div>
           <h2>Add Student</h2>
 
@@ -31,16 +35,31 @@
 
           <button id="addMentorBtn">Add Mentor</button>
         </div>
+        <div>
+          <h2>Add Student</h2>
+
+          <input type="text" id="studentIdForMessage" placeholder="Student ID">
+          <input type="text" id="Message" placeholder="Enter your message!">
+          <label for="programmingLanguage">Choose a programming language:</label>
+          <select name="programmingLanguage" id="programmingLanguage">
+            <option value="PHP">PHP</option>
+            <option value="Python">Python</option>
+            <option value="JS">JS</option>
+            <option value="Java">Java</option>
+          </select>
+          <button id="sendMessage">Send Message</button>
+        </div>
     </div>
+    
 
     <script>
       if (window.ethereum) {
         const web3 = new Web3(window.ethereum);
         window.ethereum.request({method: 'eth_requestAccounts'});
 
-        const contractAddress = '0xb4246fD17fdd5dB2eae7CD3b7A5cBC163978e2Cc';
+        const contractAddress = '0x98B3106c623fDEaCcC64CEFe06cb87F40174FEfd';
 
-        let courseEnrollment;
+        let smartContract;
 
         async function initializeContract() {
           try {
@@ -48,12 +67,26 @@
             const jsonObject = await response.json();
             const contractABI = jsonObject['abi'];
 
-            courseEnrollment = new web3.eth.Contract(contractABI, contractAddress);
+            smartContract = new web3.eth.Contract(contractABI, contractAddress);
 
-            console.log('Contract methods:', courseEnrollment.methods);
+            console.log('Contract methods:', smartContract.methods);
 
             document.getElementById('addStudentBtn').addEventListener('click', addStudent);
             document.getElementById('addMentorBtn').addEventListener('click', addMentor);
+            document.getElementById('sendMessage').addEventListener('click', sendMessage);
+            document.getElementById('getStudentsBtn').addEventListener('click', getStudents);
+
+            // smartContract.events.MessageAdded({
+            //     filter: {}, // Optional filters (e.g., { from: '0x123...' })
+            //     fromBlock: 'latest' // Start listening from the latest block
+            // })
+            //   .on('data', (event) => {
+            //     console.log('Event received:', event.returnValues);
+            //     console.log(`From: ${event.returnValues.message}`);
+            //     console.log(`To: ${event.returnValues.programmingLanguage}`);
+            //     console.log(`To: ${event.returnValues.studentId}`);
+            //   })
+            //   .on('error', console.error);
           } catch (error) {
             console.error('Error loading contract ABI:', error);
           }
@@ -70,7 +103,7 @@
             try {
               const accounts = await web3.eth.getAccounts();
               console.log(accounts);
-              await courseEnrollment.methods.addStudent(studentName, studentId).send({from: accounts[0]});
+              await smartContract.methods.addStudent(studentName, studentId).send({from: accounts[0]});
               // tx.send({from: accounts[0]});
               alert("Student added successfully!");
             } catch(error) {
@@ -84,17 +117,65 @@
         async function addMentor() {
           const mentorName = document.getElementById('mentorLanguage').value;
           const mentorLanguage = document.getElementById('mentorName').value;
-          console.log('studentName:', studentName, 'studentId:', studentId);
+          console.log('MentorName:', mentorName, 'MentorLanguage:', mentorLanguage);
 
           if (mentorName && mentorLanguage) {
             const accounts = await web3.eth.getAccounts();
             console.log(accounts);
-            tw = await courseEnrollment.methods.addMentor(mentorName, mentorLanguage);
+            tw = await smartContract.methods.addMentor(mentorName, mentorLanguage);
             tw.send({from: accounts[0]})
             alert("Mentor added successfully!");
           } else {
             alert("Please enter a valid Mentor name and programming language.");
           }
+        }
+
+        async function sendMessage() {
+          const message = document.getElementById('Message').value;
+          const programmingLanguage = document.getElementById('programmingLanguage').value;
+          const studentId = document.getElementById('studentIdForMessage').value;
+          console.log('Message:', message, 'Programming Language:', programmingLanguage, 'Student ID:', studentId);
+
+          // if(message && programmingLanguage) {
+          if(message && programmingLanguage && studentId) {
+            const accounts = await web3.eth.getAccounts();
+            tw = await smartContract.methods.sendMessage(message, programmingLanguage, studentId);
+            await tw.send({from: accounts[0]}).on('receipt', receipt => {
+                        console.log('Message sent:', receipt);
+                        updateHeader(message); // Call to update header
+                    });
+            let locDocument = document;
+            smartContract.events.MessageAdded()
+                        .on('data', event => {
+                            const { message, programmingLanguage, studentId } = event.returnValues;
+                            console.log(message, programmingLanguage, studentId);
+
+                            try {
+                              const messageElement = document.getElementById('header');
+                              if (messageElement) {
+                                  messageElement.textContent = `Message received: ${message}`;
+                              } else {
+                                console.log("Header element not found");
+                              }
+                            } catch(err) {
+                              console.log("Error updating header");
+                              console.log(err.message);
+                            }
+                        });
+            alert("Message sent successfully!");
+          } else {
+            alert("Please enter a valid message, programming language and student ID.");
+          }
+        }
+
+        async function getStudents() {
+          const students = await smartContract.methods.getStudentIds().call();
+          console.log('Students:', students);
+          alert('Students: ' + students.toString());
+        }
+
+        function updateHeader(headName) {
+          document.getElementById('header').textContent = headName;
         }
 
         initializeContract();
