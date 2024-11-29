@@ -2,12 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Project block-chain</title>
+  <title>International Chain</title>
   <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
 </head>
   <body>
-    <h1 id="header">Project block-chain</h1>
-    <div>
+
+  <div class="navbar">
+    <img src="images/university-of-limerick-logo.png" alt="UL Logo">
+  </div>
+
+  <div class="wrapper">
+    <div class="header">
+    <h1 id="header">International Chain</h1>
+    </div>
+    <div class="container">
       <div>
         <button id="getStudentsBtn">Get Students</button>
       </div>
@@ -36,7 +45,7 @@
           <button id="addMentorBtn">Add Mentor</button>
         </div>
         <div>
-          <h2>Add Student</h2>
+          <h2>Send your message</h2>
 
           <input type="text" id="studentIdForMessage" placeholder="Student ID">
           <input type="text" id="Message" placeholder="Enter your message!">
@@ -49,12 +58,14 @@
           </select>
           <button id="sendMessage">Send Message</button>
         </div>
-        <div>
-          <ul id="listOfMessages">
-            <li>Item 1</li>
-          </ul>
-        </div>
     </div>
+  </div>
+
+  <div class="message-container">
+    <ul id="listOfMessages">
+      <li></li>
+    </ul>
+  </div>
     
 
     <script>
@@ -156,6 +167,14 @@
                       entry.appendChild(document.createTextNode(message));
                       entry.id = uuidv4();
                       firstname.insertBefore(entry, firstname.firstChild);
+
+                      // Scroll to the message box
+                      document.getElementById('listOfMessages').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start',
+                        inline: 'nearest'
+                      });
+
                       setTimeout(() => {
                                 getAnswer(programmingLanguage).then(answer => {
                                   createNestedList(message, answer, entry.id);
