@@ -73,7 +73,7 @@
         const web3 = new Web3(window.ethereum);
         window.ethereum.request({method: 'eth_requestAccounts'});
 
-        const contractAddress = '0x177687C9F4A28f7B4950BA861742dAB17B949fb5';
+        const contractAddress = '0xe4469853A0044CD098b60c8f5Eb42395b299D922';
 
         let smartContract;
         let pythonAnswers;
@@ -129,6 +129,7 @@
               alert("Student added successfully!");
             } catch(error) {
               console.log(error)
+              alert("ERROR : Student ID already registered!");
             }
           } else {
             alert("Please enter a valid student name and ID.");
