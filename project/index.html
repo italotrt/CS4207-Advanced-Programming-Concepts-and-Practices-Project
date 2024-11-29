@@ -49,6 +49,11 @@
           </select>
           <button id="sendMessage">Send Message</button>
         </div>
+        <div>
+          <ul id="listOfMessages">
+            <li>Item 1</li>
+          </ul>
+        </div>
     </div>
     
 
@@ -57,7 +62,7 @@
         const web3 = new Web3(window.ethereum);
         window.ethereum.request({method: 'eth_requestAccounts'});
 
-        const contractAddress = '0x98B3106c623fDEaCcC64CEFe06cb87F40174FEfd';
+        const contractAddress = '0x177687C9F4A28f7B4950BA861742dAB17B949fb5';
 
         let smartContract;
         let pythonAnswers;
@@ -95,24 +100,10 @@
             document.getElementById('addMentorBtn').addEventListener('click', addMentor);
             document.getElementById('sendMessage').addEventListener('click', sendMessage);
             document.getElementById('getStudentsBtn').addEventListener('click', getStudents);
-
-            // smartContract.events.MessageAdded({
-            //     filter: {}, // Optional filters (e.g., { from: '0x123...' })
-            //     fromBlock: 'latest' // Start listening from the latest block
-            // })
-            //   .on('data', (event) => {
-            //     console.log('Event received:', event.returnValues);
-            //     console.log(`From: ${event.returnValues.message}`);
-            //     console.log(`To: ${event.returnValues.programmingLanguage}`);
-            //     console.log(`To: ${event.returnValues.studentId}`);
-            //   })
-            //   .on('error', console.error);
           } catch (error) {
             console.error('Error loading contract ABI:', error);
           }
         }
-
-
 
         async function addStudent() {
           const studentName = document.getElementById('studentName').value;
@@ -124,7 +115,6 @@
               const accounts = await web3.eth.getAccounts();
               console.log(accounts);
               await smartContract.methods.addStudent(studentName, studentId).send({from: accounts[0]});
-              // tx.send({from: accounts[0]});
               alert("Student added successfully!");
             } catch(error) {
               console.log(error)
@@ -156,32 +146,23 @@
           const studentId = document.getElementById('studentIdForMessage').value;
           console.log('Message:', message, 'Programming Language:', programmingLanguage, 'Student ID:', studentId);
 
-          // if(message && programmingLanguage) {
           if(message && programmingLanguage && studentId) {
             const accounts = await web3.eth.getAccounts();
             tw = await smartContract.methods.sendMessage(message, programmingLanguage, studentId);
             await tw.send({from: accounts[0]}).on('receipt', receipt => {
-                        console.log('Message sent:', receipt);
-                        updateHeader(message); // Call to update header
+                      console.log('Message sent:', receipt);
+                      var firstname = document.getElementById('listOfMessages');
+                      var entry = document.createElement('li');
+                      entry.appendChild(document.createTextNode(message));
+                      entry.id = uuidv4();
+                      firstname.insertBefore(entry, firstname.firstChild);
+                      setTimeout(() => {
+                                getAnswer(programmingLanguage).then(answer => {
+                                  createNestedList(message, answer, entry.id);
+                                });
+                            }, 3000);
                     });
             let locDocument = document;
-            smartContract.events.MessageAdded()
-                        .on('data', event => {
-                            const { message, programmingLanguage, studentId } = event.returnValues;
-                            console.log(message, programmingLanguage, studentId);
-
-                            try {
-                              const messageElement = document.getElementById('header');
-                              if (messageElement) {
-                                  messageElement.textContent = `Message received: ${message}`;
-                              } else {
-                                console.log("Header element not found");
-                              }
-                            } catch(err) {
-                              console.log("Error updating header");
-                              console.log(err.message);
-                            }
-                        });
             alert("Message sent successfully!");
           } else {
             alert("Please enter a valid message, programming language and student ID.");
@@ -198,9 +179,44 @@
           document.getElementById('header').textContent = headName;
         }
 
+        async function getAnswer(programmingLanguage) {
+          switch(programmingLanguage) {
+            case 'PHP':
+              return phpAnswers[Math.floor(Math.random() * phpAnswers.length)];
+            case 'Python':
+              return pythonAnswers[Math.floor(Math.random() * pythonAnswers.length)];
+            case 'JS':
+              return jsAnswers[Math.floor(Math.random() * jsAnswers.length)];
+            case 'Java':
+              return javaAnswers[Math.floor(Math.random() * javaAnswers.length)];
+            default:
+              return 'No answer found!';
+          }
+
+        }
+
+        function createNestedList(question, answer, id) {
+            const mainList = document.getElementById(id);
+
+            const nestedList = document.createElement('ul');
+            const nestedItem1 = document.createElement('li');
+            nestedItem1.textContent = `Answer : ${answer}`;
+            
+            nestedList.appendChild(nestedItem1);
+            mainList.appendChild(nestedList);
+        }
+
+        function uuidv4() {
+          return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+          .replace(/[xy]/g, function (c) {
+              const r = Math.random() * 16 | 0, 
+                  v = c == 'x' ? r : (r & 0x3 | 0x8);
+              return v.toString(16);
+          });
+        }
+
         initializeContract();
       }
     </script>
-
   </body>
 </html>
