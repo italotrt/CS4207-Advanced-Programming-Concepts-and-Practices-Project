@@ -73,8 +73,6 @@
         const web3 = new Web3(window.ethereum);
         window.ethereum.request({method: 'eth_requestAccounts'});
 
-        const contractAddress = '0xe4469853A0044CD098b60c8f5Eb42395b299D922';
-
         let smartContract;
         let pythonAnswers;
         let phpAnswers;
@@ -83,29 +81,28 @@
 
         async function initializeContract() {
           try {
-            let response = await fetch('build/contracts/Chat.json');
+            let response = await fetch('./build/contracts/Chat.json');
             let jsonObject = await response.json();
             const contractABI = jsonObject['abi'];
+            const contractAddress = jsonObject['networks']['5777']['address'];
 
-            response = await fetch('../answers/python.json');
+            response = await fetch('./answers/python.json');
             jsonObject = await response.json();
             pythonAnswers = jsonObject['Answer'];
 
-            response = await fetch('../answers/php.json');
+            response = await fetch('./answers/php.json');
             jsonObject = await response.json();
             phpAnswers = jsonObject['Answer'];
 
-            response = await fetch('../answers/js.json');
+            response = await fetch('./answers/js.json');
             jsonObject = await response.json();
             jsAnswers = jsonObject['Answer'];
 
-            response = await fetch('../answers/java.json');
+            response = await fetch('./answers/java.json');
             jsonObject = await response.json();
             javaAnswers = jsonObject['Answer'];
 
             smartContract = new web3.eth.Contract(contractABI, contractAddress);
-
-            console.log('Contract methods:', smartContract.methods);
 
             document.getElementById('addStudentBtn').addEventListener('click', addStudent);
             document.getElementById('addMentorBtn').addEventListener('click', addMentor);

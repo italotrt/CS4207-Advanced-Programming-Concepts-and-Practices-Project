@@ -1,0 +1,28 @@
+2024-11-30 13:46:41,605 - INFO - Running command: truffle compile
+2024-11-30 13:46:43,442 - INFO - Output: Compiling your contracts...
+===========================
+> Compiling .\contracts\Chat.sol
+> Artifacts written to C:\Dev\Meghana\project\build\contracts
+> Compiled successfully using:
+   - solc: 0.8.0+commit.c7dfd78e.Emscripten.clang
+2024-11-30 13:46:43,442 - INFO - Running command: truffle migrate --reset
+2024-11-30 13:46:46,653 - INFO - Output: Compiling your contracts...
+===========================
+> Compiling .\contracts\Chat.sol
+> Artifacts written to C:\Dev\Meghana\project\build\contracts
+> Compiled successfully using:
+   - solc: 0.8.0+commit.c7dfd78e.Emscripten.clang
+> Something went wrong while attempting to connect to the network at http://127.0.0.1:7545. Check your network configuration.
+CONNECTION ERROR: Couldn't connect to node http://127.0.0.1:7545.
+Truffle v5.11.5 (core: 5.11.5)
+Node v22.11.0
+2024-11-30 13:46:46,653 - ERROR - Error: This version of µWS is not compatible with your Node.js build:
+
+Error: Cannot find module '../binaries/uws_win32_x64_127.node'
+Require stack:
+- C:\Users\Boris Bobylkov\AppData\Roaming\npm\node_modules\truffle\node_modules\ganache\node_modules\@trufflesuite\uws-js-unofficial\src\uws.js
+- C:\Users\Boris Bobylkov\AppData\Roaming\npm\node_modules\truffle\node_modules\ganache\dist\node\core.js
+- C:\Users\Boris Bobylkov\AppData\Roaming\npm\node_modules\truffle\build\migrate.bundled.js
+- C:\Users\Boris Bobylkov\AppData\Roaming\npm\node_modules\truffle\node_modules\original-require\index.js
+- C:\Users\Boris Bobylkov\AppData\Roaming\npm\node_modules\truffle\build\cli.bundled.js
+Falling back to a NodeJS implementation; performance may be degraded.
