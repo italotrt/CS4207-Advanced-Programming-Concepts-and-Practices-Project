@@ -1,22 +1,52 @@
-2024-11-30 13:46:41,605 - INFO - Running command: truffle compile
-2024-11-30 13:46:43,442 - INFO - Output: Compiling your contracts...
+2024-11-30 14:08:36,775 - INFO - Running command: truffle compile
+2024-11-30 14:08:38,763 - INFO - Output: Compiling your contracts...
 ===========================
 > Compiling .\contracts\Chat.sol
 > Artifacts written to C:\Dev\Meghana\project\build\contracts
 > Compiled successfully using:
    - solc: 0.8.0+commit.c7dfd78e.Emscripten.clang
-2024-11-30 13:46:43,442 - INFO - Running command: truffle migrate --reset
-2024-11-30 13:46:46,653 - INFO - Output: Compiling your contracts...
+2024-11-30 14:08:38,763 - INFO - Running command: truffle migrate --reset
+2024-11-30 14:08:42,313 - INFO - Output: Compiling your contracts...
 ===========================
 > Compiling .\contracts\Chat.sol
 > Artifacts written to C:\Dev\Meghana\project\build\contracts
 > Compiled successfully using:
    - solc: 0.8.0+commit.c7dfd78e.Emscripten.clang
-> Something went wrong while attempting to connect to the network at http://127.0.0.1:7545. Check your network configuration.
-CONNECTION ERROR: Couldn't connect to node http://127.0.0.1:7545.
-Truffle v5.11.5 (core: 5.11.5)
-Node v22.11.0
-2024-11-30 13:46:46,653 - ERROR - Error: This version of µWS is not compatible with your Node.js build:
+
+
+Starting migrations...
+======================
+> Network name:    'development'
+> Network id:      5777
+> Block gas limit: 6721975 (0x6691b7)
+
+
+2_deploy_contracts.js
+=====================
+
+   Replacing 'Chat'
+   ----------------
+   > transaction hash:    0x3267948f8179471127f65e9db40a78490f79ab74406b582ba5716f9ccf50e8bc
+   > Blocks: 0            Seconds: 0
+   > contract address:    0x3F99a6a12Fe1559941a444fc9EE4d660Dc1BB7cB
+   > block number:        62
+   > block timestamp:     1732975722
+   > account:             0xa4450B40ea09C25d61fDC3A4372bD06F745B4aA6
+   > balance:             98.98684058
+   > gas used:            1325083 (0x14381b)
+   > gas price:           20 gwei
+   > value sent:          0 ETH
+   > total cost:          0.02650166 ETH
+
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.02650166 ETH
+
+Summary
+=======
+> Total deployments:   1
+> Final cost:          0.02650166 ETH
+2024-11-30 14:08:42,314 - ERROR - Error: This version of µWS is not compatible with your Node.js build:
 
 Error: Cannot find module '../binaries/uws_win32_x64_127.node'
 Require stack:
@@ -26,3 +56,6 @@ Require stack:
 - C:\Users\Boris Bobylkov\AppData\Roaming\npm\node_modules\truffle\node_modules\original-require\index.js
 - C:\Users\Boris Bobylkov\AppData\Roaming\npm\node_modules\truffle\build\cli.bundled.js
 Falling back to a NodeJS implementation; performance may be degraded.
+
+
+- Blocks: 0            Seconds: 0

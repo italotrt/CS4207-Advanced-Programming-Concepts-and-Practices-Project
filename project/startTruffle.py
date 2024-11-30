@@ -47,12 +47,13 @@ if __name__ == "__main__":
         RESET = "\033[0m"
         print(RED + "You need to have Ganache running and connected to the Metamask. Without this prerequisite application won't work properly" + RESET)
 
+        print("Truffle starting")
         run_command("truffle compile")
         run_command("truffle migrate --reset")
 
         print("Truffle deployed successfully")
 
-        # os.chdir(os.path.dirname(os.path.abspath(__file__)))
+        os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
         with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
             print(f"Serving at port {PORT}")

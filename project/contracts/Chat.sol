@@ -7,23 +7,16 @@ contract Chat {
         string name;
     }
 
-    struct Mentor {
-        string mentorName;
-        string programmingLanguage;
-    }
-
     struct Message {
         string message;
         string programmingLanguage;
         Student student;
     }
 
-    string[] public studentIds;
-
     mapping(string => Student) public students;
-    mapping(string => Mentor) public mentors;
     mapping(string => bool) public existingStudents;
 
+    string[] public studentIds;
     Message[] public messages;
     
     event StudentAdded(string studentId);
@@ -37,10 +30,6 @@ contract Chat {
         studentIds.push(studentId);
 
         emit StudentAdded(studentId);
-    }
-
-    function addMentor(string memory name, string memory programmingLanguage) public payable {
-        mentors[name] = Mentor(name, programmingLanguage);
     }
 
     function sendMessage(string memory message, string memory programmingLanguage, string memory studentId) public payable {
