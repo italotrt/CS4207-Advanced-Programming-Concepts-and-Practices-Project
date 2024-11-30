@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>International Chain</title>
   <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="./styles.css">
 </head>
   <body>
 
@@ -20,44 +20,28 @@
       <div>
         <button id="getStudentsBtn">Get Students</button>
       </div>
-        <div>
-          <h2>Add Student</h2>
+      <div>
+        <h2>Add Student</h2>
 
-          <input type="text" id="studentName" placeholder="Student Name">
-          <input type="text" id="studentId" placeholder="Student ID">
+        <input type="text" id="studentName" placeholder="Student Name">
+        <input type="text" id="studentId" placeholder="Student ID">
 
-          <button id="addStudentBtn">Add Student</button>
-        </div>
+        <button id="addStudentBtn">Add Student</button>
+      </div>
+      <div>
+        <h2>Send your message</h2>
 
-        <div>
-          <h2>Add Mentor</h2>
-
-          <input type="text" id="mentorName" placeholder="Mentor Name">
-
-          <label for="mentorLanguage">Choose a programming language:</label>
-          <select name="mentorLanguage" id="mentorLanguage">
-            <option value="PHP">PHP</option>
-            <option value="Python">Python</option>
-            <option value="JS">JS</option>
-            <option value="Java">Java</option>
-          </select>
-
-          <button id="addMentorBtn">Add Mentor</button>
-        </div>
-        <div>
-          <h2>Send your message</h2>
-
-          <input type="text" id="studentIdForMessage" placeholder="Student ID">
-          <input type="text" id="Message" placeholder="Enter your message!">
-          <label for="programmingLanguage">Choose a programming language:</label>
-          <select name="programmingLanguage" id="programmingLanguage">
-            <option value="PHP">PHP</option>
-            <option value="Python">Python</option>
-            <option value="JS">JS</option>
-            <option value="Java">Java</option>
-          </select>
-          <button id="sendMessage">Send Message</button>
-        </div>
+        <input type="text" id="studentIdForMessage" placeholder="Student ID">
+        <input type="text" id="Message" placeholder="Enter your message!">
+        <label for="programmingLanguage">Choose a programming language:</label>
+        <select name="programmingLanguage" id="programmingLanguage">
+          <option value="PHP">PHP</option>
+          <option value="Python">Python</option>
+          <option value="JS">JS</option>
+          <option value="Java">Java</option>
+        </select>
+        <button id="sendMessage">Send Message</button>
+      </div>
     </div>
   </div>
 
@@ -73,8 +57,6 @@
         const web3 = new Web3(window.ethereum);
         window.ethereum.request({method: 'eth_requestAccounts'});
 
-        const contractAddress = '0xe4469853A0044CD098b60c8f5Eb42395b299D922';
-
         let smartContract;
         let pythonAnswers;
         let phpAnswers;
@@ -83,32 +65,30 @@
 
         async function initializeContract() {
           try {
-            let response = await fetch('build/contracts/Chat.json');
+            let response = await fetch('./build/contracts/Chat.json');
             let jsonObject = await response.json();
             const contractABI = jsonObject['abi'];
+            const contractAddress = jsonObject['networks']['5777']['address'];
 
-            response = await fetch('../answers/python.json');
+            response = await fetch('./answers/python.json');
             jsonObject = await response.json();
             pythonAnswers = jsonObject['Answer'];
 
-            response = await fetch('../answers/php.json');
+            response = await fetch('./answers/php.json');
             jsonObject = await response.json();
             phpAnswers = jsonObject['Answer'];
 
-            response = await fetch('../answers/js.json');
+            response = await fetch('./answers/js.json');
             jsonObject = await response.json();
             jsAnswers = jsonObject['Answer'];
 
-            response = await fetch('../answers/java.json');
+            response = await fetch('./answers/java.json');
             jsonObject = await response.json();
             javaAnswers = jsonObject['Answer'];
 
             smartContract = new web3.eth.Contract(contractABI, contractAddress);
 
-            console.log('Contract methods:', smartContract.methods);
-
             document.getElementById('addStudentBtn').addEventListener('click', addStudent);
-            document.getElementById('addMentorBtn').addEventListener('click', addMentor);
             document.getElementById('sendMessage').addEventListener('click', sendMessage);
             document.getElementById('getStudentsBtn').addEventListener('click', getStudents);
           } catch (error) {
@@ -136,22 +116,6 @@
           }
         }
 
-        async function addMentor() {
-          const mentorName = document.getElementById('mentorLanguage').value;
-          const mentorLanguage = document.getElementById('mentorName').value;
-          console.log('MentorName:', mentorName, 'MentorLanguage:', mentorLanguage);
-
-          if (mentorName && mentorLanguage) {
-            const accounts = await web3.eth.getAccounts();
-            console.log(accounts);
-            tw = await smartContract.methods.addMentor(mentorName, mentorLanguage);
-            tw.send({from: accounts[0]})
-            alert("Mentor added successfully!");
-          } else {
-            alert("Please enter a valid Mentor name and programming language.");
-          }
-        }
-
         async function sendMessage() {
           const message = document.getElementById('Message').value;
           const programmingLanguage = document.getElementById('programmingLanguage').value;
@@ -165,8 +129,22 @@
                       console.log('Message sent:', receipt);
                       var firstname = document.getElementById('listOfMessages');
                       var entry = document.createElement('li');
-                      entry.appendChild(document.createTextNode(message));
+                      var receiptFormated = document.createElement('div');
+                      receiptFormated.textContent = `\n\r\t[BlockHash] : ${receipt.blockHash}`;
+                      receiptFormated.className = 'receiptFormated';
+                      receiptFormated.style = "display: flex;\n" +
+                                              "font-style: italic;\n" +
+                                              "font-weight: bold;\n" +
+                                              "font-size: 10px;\n" +
+                                              "padding-left: 10px;\n" +
+                                              "padding-bottom: 10px;\n" +
+                                              "padding-top: 2px;\n" +
+                                              "color: #004D40;"
+
+                      entry.appendChild(document.createTextNode(`[Question] : ${message}`));
+                      entry.appendChild(receiptFormated);
                       entry.id = uuidv4();
+
                       firstname.insertBefore(entry, firstname.firstChild);
 
                       // Scroll to the message box
@@ -180,9 +158,8 @@
                                 getAnswer(programmingLanguage).then(answer => {
                                   createNestedList(message, answer, entry.id);
                                 });
-                            }, 3000);
+                            }, Math.floor(Math.random() * 7000 + 3000));
                     });
-            let locDocument = document;
             alert("Message sent successfully!");
           } else {
             alert("Please enter a valid message, programming language and student ID.");
@@ -193,10 +170,6 @@
           const students = await smartContract.methods.getStudentIds().call();
           console.log('Students:', students);
           alert('Students: ' + students.toString());
-        }
-
-        function updateHeader(headName) {
-          document.getElementById('header').textContent = headName;
         }
 
         async function getAnswer(programmingLanguage) {
@@ -212,13 +185,14 @@
             default:
               return 'No answer found!';
           }
-
         }
 
         function createNestedList(question, answer, id) {
             const mainList = document.getElementById(id);
 
             const nestedList = document.createElement('ul');
+            nestedList.className = 'nestedList';
+
             const nestedItem1 = document.createElement('li');
             nestedItem1.textContent = `Answer : ${answer}`;
             
