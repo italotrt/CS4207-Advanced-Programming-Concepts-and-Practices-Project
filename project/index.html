@@ -2,104 +2,277 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Project block-chain</title>
+  <title>International Chain</title>
   <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ganache/dist/web/ganache.min.js"></script>
+  <link rel="stylesheet" href="./styles.css">
 </head>
-  <body>
+<body>
+
+<div class="navbar">
+  <img src="images/university-of-limerick-logo.png" alt="UL Logo">
+</div>
+
+<div class="wrapper">
+  <div class="header">
+    <h1 id="header">International Chain</h1>
+  </div>
+  <div class="container">
     <div>
-        <div>
-          <h2>Add Student</h2>
-
-          <input type="text" id="studentName" placeholder="Student Name">
-          <input type="text" id="studentId" placeholder="Student ID">
-
-          <button id="addStudentBtn">Add Student</button>
-        </div>
-
-        <div>
-          <h2>Add Mentor</h2>
-
-          <input type="text" id="mentorName" placeholder="Mentor Name">
-
-          <label for="mentorLanguage">Choose a programming language:</label>
-          <select name="mentorLanguage" id="mentorLanguage">
-            <option value="PHP">PHP</option>
-            <option value="Python">Python</option>
-            <option value="JS">JS</option>
-            <option value="Java">Java</option>
-          </select>
-
-          <button id="addMentorBtn">Add Mentor</button>
-        </div>
+      <button id="testBtn">Test</button>
     </div>
+    <div>
+      <h2>Add Student</h2>
 
-    <script>
-      if (window.ethereum) {
-        const web3 = new Web3(window.ethereum);
-        window.ethereum.request({method: 'eth_requestAccounts'});
+      <input type="text" id="studentName" placeholder="Student Name">
+      <input type="text" id="studentId" placeholder="Student ID">
 
-        const contractAddress = '0xb4246fD17fdd5dB2eae7CD3b7A5cBC163978e2Cc';
+      <button id="addStudentBtn">Add Student</button>
+    </div>
+    <div>
+      <h2>Send your message</h2>
 
-        let courseEnrollment;
+      <input type="text" id="studentIdForMessage" placeholder="Student ID">
+      <input type="text" id="Message" placeholder="Enter your message!">
+      <label for="programmingLanguage">Choose a programming language:</label>
+      <select name="programmingLanguage" id="programmingLanguage">
+        <option value="PHP">PHP</option>
+        <option value="Python">Python</option>
+        <option value="JS">JS</option>
+        <option value="Java">Java</option>
+      </select>
+      <button id="sendMessage">Send Message</button>
+    </div>
+  </div>
+</div>
 
-        async function initializeContract() {
-          try {
-            const response = await fetch('build/contracts/Chat.json');
-            const jsonObject = await response.json();
-            const contractABI = jsonObject['abi'];
+<div class="message-container">
+  <ul id="listOfMessages">
+    <li></li>
+  </ul>
+</div>
 
-            courseEnrollment = new web3.eth.Contract(contractABI, contractAddress);
-
-            console.log('Contract methods:', courseEnrollment.methods);
-
-            document.getElementById('addStudentBtn').addEventListener('click', addStudent);
-            document.getElementById('addMentorBtn').addEventListener('click', addMentor);
-          } catch (error) {
-            console.error('Error loading contract ABI:', error);
-          }
-        }
+<div class="message-container">
+  <h1>Test</h1>
+  <ul id="listOfMessagesTest">
+    <li></li>
+  </ul>
+</div>
 
 
 
-        async function addStudent() {
-          const studentName = document.getElementById('studentName').value;
-          const studentId = document.getElementById('studentId').value;
-          console.log('studentName:', studentName, 'studentId:', studentId);
 
-          if (studentName && studentId) {
-            try {
-              const accounts = await web3.eth.getAccounts();
-              console.log(accounts);
-              await courseEnrollment.methods.addStudent(studentName, studentId).send({from: accounts[0]});
-              // tx.send({from: accounts[0]});
-              alert("Student added successfully!");
-            } catch(error) {
-              console.log(error)
-            }
-          } else {
-            alert("Please enter a valid student name and ID.");
-          }
-        }
+<script>
+  if (window.ethereum) {
+    let web3 = new Web3(window.ethereum);
+    window.ethereum.request({method: 'eth_requestAccounts'});
 
-        async function addMentor() {
-          const mentorName = document.getElementById('mentorLanguage').value;
-          const mentorLanguage = document.getElementById('mentorName').value;
-          console.log('studentName:', studentName, 'studentId:', studentId);
+    let contractABI;
+    let contractAddress;
+    let smartContract;
+    let pythonAnswers;
+    let phpAnswers;
+    let jsAnswers;
+    let javaAnswers;
 
-          if (mentorName && mentorLanguage) {
-            const accounts = await web3.eth.getAccounts();
-            console.log(accounts);
-            tw = await courseEnrollment.methods.addMentor(mentorName, mentorLanguage);
-            tw.send({from: accounts[0]})
-            alert("Mentor added successfully!");
-          } else {
-            alert("Please enter a valid Mentor name and programming language.");
-          }
-        }
+    async function initializeContract() {
+      try {
+        let response = await fetch('./build/contracts/Chat.json');
+        let jsonObject = await response.json();
+        contractABI = jsonObject['abi'];
+        contractAddress = jsonObject['networks']['5777']['address'];
 
-        initializeContract();
+        response = await fetch('./answers/python.json');
+        jsonObject = await response.json();
+        pythonAnswers = jsonObject['Answer'];
+
+        response = await fetch('./answers/php.json');
+        jsonObject = await response.json();
+        phpAnswers = jsonObject['Answer'];
+
+        response = await fetch('./answers/js.json');
+        jsonObject = await response.json();
+        jsAnswers = jsonObject['Answer'];
+
+        response = await fetch('./answers/java.json');
+        jsonObject = await response.json();
+        javaAnswers = jsonObject['Answer'];
+
+        smartContract = new web3.eth.Contract(contractABI, contractAddress);
+
+        document.getElementById('addStudentBtn').addEventListener('click', addStudent);
+        document.getElementById('sendMessage').addEventListener('click', sendMessage);
+        document.getElementById('testBtn').addEventListener('click', test);
+      } catch (error) {
+        console.error('Error loading contract ABI:', error);
       }
-    </script>
+    }
 
-  </body>
+    async function addStudent() {
+      const studentName = document.getElementById('studentName').value;
+      const studentId = document.getElementById('studentId').value;
+      console.log('studentName:', studentName, 'studentId:', studentId);
+
+      if (studentName && studentId) {
+        try {
+          const accounts = await web3.eth.getAccounts();
+          console.log(accounts);
+          await smartContract.methods.addStudent(studentName, studentId).send({from: accounts[0]});
+          alert("Student added successfully!");
+        } catch(error) {
+          console.log(error)
+          alert("ERROR : Student ID already registered!");
+        }
+      } else {
+        alert("Please enter a valid student name and ID.");
+      }
+    }
+
+    async function sendMessage() {
+      const message = document.getElementById('Message').value;
+      const programmingLanguage = document.getElementById('programmingLanguage').value;
+      const studentId = document.getElementById('studentIdForMessage').value;
+      console.log('Message:', message, 'Programming Language:', programmingLanguage, 'Student ID:', studentId);
+
+      if(message && programmingLanguage && studentId) {
+        const accounts = await web3.eth.getAccounts();
+        tw = await smartContract.methods.sendMessage(message, programmingLanguage, studentId);
+        await tw.send({from: accounts[0]}).on('receipt', receipt => {
+          console.log('Message sent:', receipt);
+          var firstname = document.getElementById('listOfMessages');
+          var entry = document.createElement('li');
+          var receiptFormated = document.createElement('div');
+          receiptFormated.textContent = `\n\r\t[BlockHash] : ${receipt.blockHash}`;
+          receiptFormated.className = 'receiptFormated';
+          receiptFormated.style = "display: flex;\n" +
+                  "font-style: italic;\n" +
+                  "font-weight: bold;\n" +
+                  "font-size: 10px;\n" +
+                  "padding-left: 10px;\n" +
+                  "padding-bottom: 10px;\n" +
+                  "padding-top: 2px;\n" +
+                  "color: #004D40;"
+
+          entry.appendChild(document.createTextNode(`[Question] : ${message}`));
+          entry.appendChild(receiptFormated);
+          entry.id = uuidv4();
+
+          firstname.insertBefore(entry, firstname.firstChild);
+
+          // Scroll to the message box
+          document.getElementById('listOfMessages').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+            inline: 'nearest'
+          });
+
+          setTimeout(() => {
+            getAnswer(programmingLanguage).then(answer => {
+              createNestedList(message, answer, entry.id);
+            });
+          }, Math.floor(Math.random() * 7000 + 3000));
+        });
+        alert("Message sent successfully!");
+      } else {
+        alert("Please enter a valid message, programming language and student ID.");
+      }
+    }
+
+    async function getStudents() {
+      const students = await smartContract.methods.getStudentIds().call();
+      console.log('Students:', students);
+      alert('Students: ' + students.toString());
+    }
+
+    async function getAnswer(programmingLanguage) {
+      switch(programmingLanguage) {
+        case 'PHP':
+          return phpAnswers[Math.floor(Math.random() * phpAnswers.length)];
+        case 'Python':
+          return pythonAnswers[Math.floor(Math.random() * pythonAnswers.length)];
+        case 'JS':
+          return jsAnswers[Math.floor(Math.random() * jsAnswers.length)];
+        case 'Java':
+          return javaAnswers[Math.floor(Math.random() * javaAnswers.length)];
+        default:
+          return 'No answer found!';
+      }
+    }
+
+    function createNestedList(question, answer, id) {
+      const mainList = document.getElementById(id);
+
+      const nestedList = document.createElement('ul');
+      nestedList.className = 'nestedList';
+
+      const nestedItem1 = document.createElement('li');
+      nestedItem1.textContent = `Answer : ${answer}`;
+
+      nestedList.appendChild(nestedItem1);
+      mainList.appendChild(nestedList);
+    }
+
+    function uuidv4() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+              .replace(/[xy]/g, function (c) {
+                const r = Math.random() * 16 | 0,
+                        v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+              });
+    }
+
+    async function test() {
+      const ganacheProvider = Ganache.default.provider();
+      const web3Test = new Web3(ganacheProvider);
+      let smartContractTest = new web3Test.eth.Contract(contractABI, contractAddress);
+      let listOfMessages = document.getElementById('listOfMessagesTest');
+      let startHR = document.createElement('li');
+      startHR.appendChild(document.createElement('hr'));
+      listOfMessages.appendChild(startHR);
+      let accounts = await ganacheProvider.request({ method: "eth_accounts", params: [] });
+      console.log(accounts);
+
+      for (let i = 1; i <= 5; i++) {
+        await smartContractTest.methods.addStudent(`test ${i}`, i.toString()).send({from: accounts[1]})
+                .on('receipt', receipt => {
+                  let item = document.createElement('li');
+                  item.appendChild(document.createTextNode(`Student was added with hash: ${receipt.blockHash}`));
+                  listOfMessages.appendChild(item);
+                });
+      }
+
+      let midHR = document.createElement('li');
+      midHR.appendChild(document.createElement('br'));
+      listOfMessages.appendChild(startHR);
+
+
+      for (let i = 1; i <= 5; i++) {
+        console.log(`Sent message ${i}`)
+        await smartContractTest.methods.sendMessage(`test ${test}`, _getProgrammingLanguage(i), i.toString()).send({from: accounts[1]})
+                .on('receipt', receipt => {
+                  let item = document.createElement('li');
+                  item.appendChild(document.createTextNode(`Student with id ${i} sent a message with block hash: ${receipt.blockHash}`));
+                  listOfMessages.appendChild(item);
+                });
+      }
+
+      let endHR = document.createElement('li');
+      endHR.appendChild(document.createElement('hr'));
+      listOfMessages.appendChild(endHR);
+    }
+
+    function _getProgrammingLanguage(i) {
+      switch(i) {
+        case 1: return 'PHP';
+        case 2: return 'Java';
+        case 3: return 'JS';
+        case 4: return 'Python';
+        default: return 'PHP';
+      }
+    }
+
+    initializeContract();
+  }
+</script>
+</body>
 </html>
