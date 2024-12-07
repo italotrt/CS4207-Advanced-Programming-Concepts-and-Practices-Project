@@ -75,6 +75,8 @@
     let jsAnswers;
     let javaAnswers;
 
+    // Initialize the contract and gets the appropriate fields Chat.json in ./build/contracts
+    // Also gets the answers from the jsons in ./answers
     async function initializeContract() {
       try {
         let response = await fetch('./build/contracts/Chat.json');
@@ -98,6 +100,7 @@
         jsonObject = await response.json();
         javaAnswers = jsonObject['Answer'];
 
+        // Initialize the smart contract
         smartContract = new web3.eth.Contract(contractABI, contractAddress);
 
         document.getElementById('addStudentBtn').addEventListener('click', addStudent);
@@ -108,13 +111,14 @@
       }
     }
 
+    // This function invokes the addStudent function in the smart contract
     async function addStudent() {
       const studentName = document.getElementById('studentName').value;
       const studentId = document.getElementById('studentId').value;
       console.log('studentName:', studentName, 'studentId:', studentId);
 
       if (studentName && studentId) {
-        try {
+        try { // Try to make a transaction to the smart contract
           const accounts = await web3.eth.getAccounts();
           console.log(accounts);
           await smartContract.methods.addStudent(studentName, studentId).send({from: accounts[0]});
@@ -128,6 +132,7 @@
       }
     }
 
+    // Invoke the sendMessage function in the smart contract
     async function sendMessage() {
       const message = document.getElementById('Message').value;
       const programmingLanguage = document.getElementById('programmingLanguage').value;
@@ -178,12 +183,7 @@
       }
     }
 
-    async function getStudents() {
-      const students = await smartContract.methods.getStudentIds().call();
-      console.log('Students:', students);
-      alert('Students: ' + students.toString());
-    }
-
+    // Get a random answer from the answers json files
     async function getAnswer(programmingLanguage) {
       switch(programmingLanguage) {
         case 'PHP':
@@ -199,6 +199,7 @@
       }
     }
 
+    // Creates the HTML element for the answer
     function createNestedList(question, answer, id) {
       const mainList = document.getElementById(id);
 
@@ -212,6 +213,7 @@
       mainList.appendChild(nestedList);
     }
 
+    // Generates a random UUID https://stackoverflow.com/questions/105034/how-do-i-create-a-guid-uuid
     function uuidv4() {
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
               .replace(/[xy]/g, function (c) {
@@ -221,6 +223,7 @@
               });
     }
 
+    // Spins up the second ganache server, connects the web3 instance and adds 5 students and sends 5 messages
     async function test() {
       const ganacheProvider = Ganache.default.provider();
       const web3Test = new Web3(ganacheProvider);
@@ -232,6 +235,7 @@
       let accounts = await ganacheProvider.request({ method: "eth_accounts", params: [] });
       console.log(accounts);
 
+      // Add Students
       for (let i = 1; i <= 5; i++) {
         await smartContractTest.methods.addStudent(`test ${i}`, i.toString()).send({from: accounts[1]})
                 .on('receipt', receipt => {
@@ -245,7 +249,7 @@
       midHR.appendChild(document.createElement('br'));
       listOfMessages.appendChild(startHR);
 
-
+      // Send messages
       for (let i = 1; i <= 5; i++) {
         console.log(`Sent message ${i}`)
         await smartContractTest.methods.sendMessage(`test ${test}`, _getProgrammingLanguage(i), i.toString()).send({from: accounts[1]})
