@@ -51,7 +51,7 @@ if __name__ == "__main__":
         if len(sys.argv) > 1 and sys.argv[1] == "-deploy" :
             print("Truffle starting")
             run_command("truffle compile")
-            run_command("truffle migrate --reset")
+            run_command("truffle migrate")
             print("Truffle deployed successfully")
 
         os.chdir(os.path.dirname(os.path.abspath(__file__)))

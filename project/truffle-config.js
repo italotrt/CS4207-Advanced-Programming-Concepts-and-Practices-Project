@@ -13,7 +13,7 @@ module.exports = {
       // port: 8545,
       port: 7545,
       network_id: "5777",
-      gas: 6721975, // Change this and see the effects
+      gas: 25000, // Change this and see the effects 6721975
       gasPrice: 20000000000,
     },
 
