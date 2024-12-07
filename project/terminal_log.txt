@@ -1,15 +1,15 @@
-2024-11-30 14:08:36,775 - INFO - Running command: truffle compile
-2024-11-30 14:08:38,763 - INFO - Output: Compiling your contracts...
+2024-12-04 17:52:11,862 - INFO - Running command: truffle compile
+2024-12-04 17:52:15,475 - INFO - Output: Compiling your contracts...
 ===========================
 > Compiling .\contracts\Chat.sol
-> Artifacts written to C:\Dev\Meghana\project\build\contracts
+> Artifacts written to C:\Users\kmila\IdeaProjects\CS4207-Advanced-Programming-Concepts-and-Practices-Project-2\project\build\contracts
 > Compiled successfully using:
    - solc: 0.8.0+commit.c7dfd78e.Emscripten.clang
-2024-11-30 14:08:38,763 - INFO - Running command: truffle migrate --reset
-2024-11-30 14:08:42,313 - INFO - Output: Compiling your contracts...
+2024-12-04 17:52:15,475 - INFO - Running command: truffle migrate --reset
+2024-12-04 17:52:23,658 - INFO - Output: Compiling your contracts...
 ===========================
 > Compiling .\contracts\Chat.sol
-> Artifacts written to C:\Dev\Meghana\project\build\contracts
+> Artifacts written to C:\Users\kmila\IdeaProjects\CS4207-Advanced-Programming-Concepts-and-Practices-Project-2\project\build\contracts
 > Compiled successfully using:
    - solc: 0.8.0+commit.c7dfd78e.Emscripten.clang
 
@@ -26,13 +26,13 @@ Starting migrations...
 
    Replacing 'Chat'
    ----------------
-   > transaction hash:    0x3267948f8179471127f65e9db40a78490f79ab74406b582ba5716f9ccf50e8bc
+   > transaction hash:    0x118d3a04f3328c4f42d57fbd6f2a0125460103ad4e48506243b1d8ba75c4f603
    > Blocks: 0            Seconds: 0
-   > contract address:    0x3F99a6a12Fe1559941a444fc9EE4d660Dc1BB7cB
-   > block number:        62
-   > block timestamp:     1732975722
-   > account:             0xa4450B40ea09C25d61fDC3A4372bD06F745B4aA6
-   > balance:             98.98684058
+   > contract address:    0x69a53B8B49b26CC2af2A233Dd8B9Ac5b08223709
+   > block number:        3
+   > block timestamp:     1733334743
+   > account:             0x5A44af9e791Ed1035979c05E42C64784fF869bA6
+   > balance:             99.94699668
    > gas used:            1325083 (0x14381b)
    > gas price:           20 gwei
    > value sent:          0 ETH
@@ -46,16 +46,4 @@ Summary
 =======
 > Total deployments:   1
 > Final cost:          0.02650166 ETH
-2024-11-30 14:08:42,314 - ERROR - Error: This version of µWS is not compatible with your Node.js build:
-
-Error: Cannot find module '../binaries/uws_win32_x64_127.node'
-Require stack:
-- C:\Users\Boris Bobylkov\AppData\Roaming\npm\node_modules\truffle\node_modules\ganache\node_modules\@trufflesuite\uws-js-unofficial\src\uws.js
-- C:\Users\Boris Bobylkov\AppData\Roaming\npm\node_modules\truffle\node_modules\ganache\dist\node\core.js
-- C:\Users\Boris Bobylkov\AppData\Roaming\npm\node_modules\truffle\build\migrate.bundled.js
-- C:\Users\Boris Bobylkov\AppData\Roaming\npm\node_modules\truffle\node_modules\original-require\index.js
-- C:\Users\Boris Bobylkov\AppData\Roaming\npm\node_modules\truffle\build\cli.bundled.js
-Falling back to a NodeJS implementation; performance may be degraded.
-
-
-- Blocks: 0            Seconds: 0
+2024-12-04 17:52:23,658 - ERROR - Error: - Blocks: 0            Seconds: 0
